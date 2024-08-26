@@ -1,0 +1,370 @@
+@font-face {
+    font-family: 'Bedstead';
+    src: url('fonts/bedstead/bedstead.otf');
+}
+
+@font-face {
+    font-family: 'BPtypewrite';
+    src: url('fonts/BPtypewrite/BPtypewrite.otf');
+}
+
+@font-face {
+    font-family: 'Oxanium';
+    src: url('fonts/oxanium/Oxanium-Medium.ttf');
+}
+
+
+/* Styling for the first series (Crimson) */
+.chart-bar.series0 {
+    -fx-bar-fill: #e57f84;
+}
+
+/* Styling for the second series (Blue) */
+.chart-bar.series1 {
+    -fx-bar-fill: #4297a0;
+}
+
+.chart-bar.series2 {
+    -fx-bar-fill: #2f5061;
+}
+
+/* Styling for the points in the first series (Crimson) */
+.chart-symbol.series0 {
+    -fx-background-color:  #4297a0;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Styling for the points in the second series (Blue) */
+.chart-symbol.series1 {
+    -fx-background-color: #e57f84;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Styling for the points in the third series (Blue) */
+.chart-symbol.series2 {
+    -fx-background-color: #2f5061;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Increase the font size of axis labels */
+.axis-label {
+    -fx-font-size: 18px; /* Adjust the font size as needed */
+}
+
+
+.chart-series-line {
+    -fx-stroke: gray; -fx-stroke-width: 2px; -fx-stroke-dash-array: 10 5;
+}
+
+
+
+
+
+.root {
+    -fx-base: rgb(21, 23, 31);
+    -fx-background: -fx-base;
+    -fx-control-inner-background: -fx-base;
+    -fx-control-inner-background-alt: -fx-base;
+    -fx-faint-focus-color: -fx-accent;
+    -fx-hover-base: #a1fbff;
+    -primary-color: rgb(128, 219, 242);
+    -fx-pressed-base: derive(-fx-hover-base, -15%);
+    -fx-box-border: -fx-hover-base;
+    -fx-text-box-border: -fx-hover-base;
+    -fx-shadow-highlight-color: -fx-base;
+    -fx-outer-border: -fx-hover-base;
+}
+
+.axis {
+
+
+    -fx-auto-unit-scaling: false;
+    -fx-border-color: #4682b4;
+    -fx-border-width: 1px;
+    -fx-overlap-policy: SKIP_ALT;
+    -fx-tick-label-spacing: 200px;
+    -fx-max-major-tick-label-count: 10;
+    -fx-minor-tick-count: 5;
+
+    -fx-stroke: #d7f3f7;
+    -fx-text-fill: #d7f3f7;
+    -fx-tick-label-fill: #d7f3f7;
+
+}
+
+&:horizontal  .axis-major-tick-mark {
+    visibility: hidden;
+    -fx-stroke: #d7f3f7;
+    -fx-tick-label-spacing: 100px;
+}
+
+&:horizontal  .axis-tick-label {
+    visibility: hidden;
+    -fx-stroke: #d7f3f7;
+    -fx-tick-label-spacing: 100px;
+}
+
+
+&:center  .axis-tick-label {
+    visibility: hidden;
+    -fx-stroke: white;
+    -fx-tick-label-spacing: 1000px;
+}
+
+.axis-label, .axis-tick-label {
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 11px;
+    -fx-fill: rgb(219, 170, 164);
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-major-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-title {
+    -fx-font-family: "Bedstead";
+    -fx-text-fill: #d7f3f7;
+    -fx-font-size: 12px;
+}
+
+.chart {
+    -fx-padding: 5px;
+}
+.chart-content {
+    -fx-padding: 5px;
+}
+
+.axis .text {
+  -fx-padding: 5px;
+  -fx-text-fill: #d7f3f7;
+  -fx-font-family: "Bedstead";
+  -fx-font-size: 12px;
+
+
+}
+
+
+.combo-box-base {
+    -fx-background-color: black, black, black, black;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+    -fx-text-fill: rgb(64, 200, 227);
+}
+
+.combo-box {
+    -fx-background-color: transparent;
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 12px;
+    -fx-prompt-text-fill: rgb(64, 200, 227);
+    -fx-text-fill: rgb(64, 200, 227);
+}
+
+.combo-box,
+.choice-box {
+
+    -fx-background-color: transparent;
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 12px;
+    -fx-prompt-text-fill: rgb(64, 200, 227);
+    -fx-text-fill: rgb(64, 200, 227);
+}
+
+.combo-box .list-cell
+{
+    -fx-background-color: transparent;
+    -fx-text-fill: rgb(64, 200, 227);
+    -fx-padding: 3 0 2 7;
+    -fx-cell-size: 1.66667em;
+}
+
+.list-cell {
+    -fx-font-family: "Bedstead";
+    -fx-background-color: transparent;
+    -fx-text-fill: rgb(64, 200, 227);
+    -fx-padding: 3 0 2 7;
+    -fx-cell-size: 1.66667em;
+
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-effect: dropshadow( three-pass-box , rgba(64, 200, 227, .6) , 8, 0.0 , 0 , 0 );
+    -fx-background-color: rgb(10,13,16);
+    -fx-text-fill: white;
+}
+
+
+.list-cell:filled:hover {
+    -fx-background-color: rgb(15,23,26);
+    -fx-text-fill: rgb(53, 252, 106);
+}
+
+
+.combo-box-popup .list-view
+{
+    -fx-background-color: black, black;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(64, 200, 227, .6) , 8, 0.0 , 0 , 0 );
+}
+
+.text-area {
+    -fx-text-fill: #5df73e;
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 14px;
+}
+
+.text-area .content{
+    -fx-background-color: black;
+    -fx-effect: dropshadow( three-pass-box , rgba(64, 200, 227, .6) , 8, 0.0 , 0 , 0 );
+    -fx-text-fill: #5df73e;
+    -fx-font-family: "Bedstead";
+}
+
+.label {
+    -fx-text-fill: #d7f3f7;
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 14px;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-datapoint-tooltip-label {
+    -fx-background-color: rgba(50.0, 50.0, 50.0, .7);
+    -fx-text-fill: #d7f3f7;
+    -fx-font-family: "Bedstead";
+    /*-fx-border-color: magenta;*/
+    /*-fx-font-family: "Bedstead";*/
+    /*-fx-font-size: 12px;*/
+    /*-fx-font-weight: bold;*/
+    /*-fx-text-alignment: left;*/
+    /*-fx-text-fill: #a5ced4;*/
+}
+
+
+.jfx-slider {
+    -fx-border-color: rgba(219, 170, 164, .7);
+    -fx-border-width: 1;
+    -fx-border-radius: 7;
+}
+
+.jfx-slider > .track {
+    -fx-background-color: transparent;
+}
+
+.jfx-slider > .colored-track {
+    -fx-background-color: linear-gradient(to right, rgba(219, 170, 164, .2), rgb(219, 170, 164));
+}
+
+.jfx-slider > .animated-thumb {
+    -fx-background-color: transparent;
+}
+
+
+.jfx-slider .slider-value {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+}
+
+.jfx-slider > .thumb {
+    -fx-border-color: rgb(219, 170, 164);
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow( gaussian , rgb(219, 170, 164) , 28 , .2 , 0, 0 );
+}
+
+.text-field {
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 14px;
+    -fx-padding: 2,2,2,2;
+    -fx-border-color: rgb(219, 170, 164);
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(219, 170, 164)
+}
+
+
+.check-box {
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 12px;
+    -fx-text-fill : rgb(219, 170, 164);
+}
+.check-box .box {
+    -fx-background-color: transparent;
+    -fx-border-color: rgb(219, 170, 164);
+    -fx-border-radius:3px;
+}
+
+.radio-button {
+    -fx-font-family: "Bedstead";
+    -fx-font-size: 12px;
+    -fx-text-fill : rgb(219, 170, 164);
+}
+
+.radio-button .radio {
+    -fx-border-width: 1px;
+    -fx-border-color: rgb(219, 170, 164);
+    -fx-background-color: transparent;
+    -fx-border-radius: 15px;
+    -fx-padding: 4px;
+}
+
+
+.value-indicator-label {
+    -fx-background-color: rgba(30,30,30,.3);
+    -fx-border-color: rgb(219, 170, 164);
+    -fx-text-fill : rgb(219, 170, 164);
+    -fx-border-radius: 2;
+    -fx-font-size: 10;
+    -fx-text-alignment: center;
+    -fx-font-family: "Bedstead";
+    -fx-padding: 1 2 1 2;
+}
+
+.range-indicator-label {
+    -fx-background-color: rgba(30,30,30,.3);
+    -fx-border-color: rgb(219, 170, 164);
+    -fx-text-fill : rgb(219, 170, 164);
+    -fx-border-radius: 2;
+    -fx-font-size: 10;
+    -fx-text-alignment: center;
+    -fx-font-family: "Bedstead";
+    -fx-padding: 1 2 1 2;
+}
+
+.value-indicator-line {
+    -fx-stroke-width: 1;
+    -fx-stroke: rgb(219, 170, 164);
+    -fx-stroke-dash-array: 8;
+}
+
+.value-indicator-marker {
+    -fx-stroke-width: 0.5;
+    -fx-stroke: derive(-fx-background, -30%);
+    -fx-fill: rgb(219, 170, 164);
+}
+
+
+
+.chart-series-line {
+    -fx-stroke: #347aeb;
+    -fx-stroke-width: 2px;
+}
+
+.chart-legend-item-text {
+    -fx-text-fill: #a9a9a9;
+}
+

@@ -1,0 +1,76 @@
+@font-face {
+    font-family: 'Bedstead';
+    src: url('fonts/bedstead/bedstead.otf');
+}
+
+@font-face {
+    font-family: 'BPtypewrite';
+    src: url('fonts/BPtypewrite/BPtypewrite.otf');
+}
+
+.root {
+    -fx-base: rgb(21, 23, 31);
+    -fx-background: -fx-base;
+    -fx-control-inner-background: -fx-base;
+    -fx-control-inner-background-alt: -fx-base;
+    -fx-faint-focus-color: -fx-accent;
+    -fx-hover-base: #a1fbff;
+    -primary-color: rgb(128, 219, 242);
+    -fx-pressed-base: derive(-fx-hover-base, -15%);
+    -fx-box-border: -fx-hover-base;
+    -fx-text-box-border: -fx-hover-base;
+    -fx-shadow-highlight-color: -fx-base;
+    -fx-outer-border: -fx-hover-base;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane {
+    -fx-tab-min-width: 120px;
+}
+
+.tab {
+    -fx-background-insets: 0 1 0 1, 0, 0;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #0c0c0d;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #102638;
+}
+
+.tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: rgb(110,100,120);
+    -fx-font-size: 16px;
+    -fx-font-family: 'BPtypewrite';
+}
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: rgb(110, 230, 130);
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-background-insets: 0, 0 0 1 0;
+    /* -fx-padding: 0.416667em 0.166667em 0.0em 0.833em; /* 5 2 0 10 */
+    -fx-padding: 0.416667em 0.166667em 0.0em 0.0em; /* overridden as 5 2 0 0 */
+}
+
+.tab-header-area  {
+    -fx-background-color: black;
+}
+
+.label {
+    -fx-font-family: "BPtypewrite";
+    -fx-font-size: 13px;
+    -fx-text-fill: rgb(219, 170, 164);
+}
+.button {
+    -fx-text-fill: WHITE;
+    -fx-font-weight: BOLD;
+}

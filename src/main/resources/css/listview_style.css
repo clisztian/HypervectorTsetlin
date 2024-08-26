@@ -1,0 +1,40 @@
+
+@font-face {
+    font-family: 'Xolonium';
+    src: url('xolonium/Xolonium-Regular.otf');
+}
+
+.root {
+    -fx-base: rgb(10, 10, 10);
+    -fx-background: -fx-base;
+    -fx-control-inner-background: -fx-base;
+    -fx-control-inner-background-alt: -fx-base;
+    -fx-faint-focus-color: -fx-accent;
+    -fx-hover-base: #a1fbff;
+    -primary-color: rgb(128, 219, 242);
+    -fx-pressed-base: derive(-fx-hover-base, -15%);
+    -fx-box-border: -fx-hover-base;
+    -fx-text-box-border: -fx-hover-base;
+    -fx-shadow-highlight-color: -fx-base;
+    -fx-outer-border: -fx-hover-base;
+}
+
+.list-view {
+    -fx-background-color: rgba(10, 10, 10, 0.8);
+    -fx-background-radius: 20;
+    -fx-font-size: 8pt;
+    -fx-font-family: 'Xolonium';
+    -fx-text-fill: rgb(116, 221, 252);
+}
+.list-cell {
+    -fx-border-radius: 20;
+    -fx-background-color: rgba(3, 10, 10, 0.3);
+    -fx-text-fill: rgb(116, 221, 252);
+}
+
+.list-cell, .list-cell::focused {
+    -fx-border-radius: 20;
+    -fx-background-color: rgba(3, 10, 10, 0.3);
+    -fx-text-fill: rgb(116, 221, 252);
+}
+
