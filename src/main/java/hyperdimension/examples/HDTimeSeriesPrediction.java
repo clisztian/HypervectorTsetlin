@@ -399,7 +399,7 @@ public class HDTimeSeriesPrediction extends Application {
     public void trainFXSeries(String symbol, double d) {
 
         //first get fractional differeced series
-        String filePath = "/home/lisztian/FXProjects/TsetlinTraderFX/src/main/resources/data/" + symbol  + "_4_min.csv";
+        String filePath = symbol  + "_4_min.csv";
         fx_series = extractMidPriceAtTime(filePath, "08:00", d);
 
         seriesAll.clear();

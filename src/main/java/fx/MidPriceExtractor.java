@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MidPriceExtractor {
 
     public static void main(String[] args) {
-        String filePath = "/home/lisztian/FXProjects/TsetlinTraderFX/src/main/resources/data/EURUSD_4_min.csv";
+        String filePath = "";
         extractMidPriceAtTime(filePath, "08:00", .5);
     }
 
