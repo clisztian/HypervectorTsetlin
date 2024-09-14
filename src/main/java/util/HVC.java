@@ -6,6 +6,8 @@ package util;
 public class HVC {
 
     public static final int DIMENSION = 10000;
+    public static final int SEGMENTS = 100;
+    public static final int LONG_SIZE = 64;
     public static final int SIZE = 8; // a factor of DIMENSION
     public static final int BYTE_SIZE = DIMENSION / SIZE;
 
