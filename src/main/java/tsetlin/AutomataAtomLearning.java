@@ -34,8 +34,8 @@ public class AutomataAtomLearning {
 	private AutomataAtom[] tm;
 	private int[][][] ta_atom_state; //[CLAUSES][LA_CHUNKS][STATE_BITS];
 	
-	
-	Random rng;
+	private int seed = 21; // default seed for random number generator
+	private final Random rng = new Random(seed);
 	private double[] count_pos_features;
 	private double[] count_neg_features;
 	private double[][] feature_interpret;
@@ -74,7 +74,7 @@ public class AutomataAtomLearning {
 		for(int i = 0; i < nClasses; i++) {
 			tm[i] = new AutomataAtom(encoder, threshold, nClauses, max_specificity, boost, drop_clause_p).initialize(ta_atom_state);
 		}
-		rng = new Random(21);
+
 		
 	}
 	
@@ -284,7 +284,7 @@ public class AutomataAtomLearning {
 		for(int i = 0; i < X.length; i++) {
 			example_indexes_list.add(i);
 		}
-		Collections.shuffle(example_indexes_list);
+		Collections.shuffle(example_indexes_list, rng);
 
 		for(int i = 0; i < X.length; i++) {
 

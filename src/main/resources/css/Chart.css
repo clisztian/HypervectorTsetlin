@@ -13,20 +13,7 @@
     src: url('fonts/oxanium/Oxanium-Medium.ttf');
 }
 
-.root {
-    -fx-base: rgb(21, 21, 21);
-    -fx-background: -fx-base;
-    -fx-control-inner-background: -fx-base;
-    -fx-control-inner-background-alt: -fx-base;
-    -fx-faint-focus-color: -fx-accent;
-    -fx-hover-base: #a1fbff;
-    -primary-color: rgb(128, 219, 242);
-    -fx-pressed-base: derive(-fx-hover-base, -15%);
-    -fx-box-border: -fx-hover-base;
-    -fx-text-box-border: -fx-hover-base;
-    -fx-shadow-highlight-color: -fx-base;
-    -fx-outer-border: -fx-hover-base;
-}
+
 
 .axis {
 
@@ -106,7 +93,16 @@
     -fx-effect: null;
 }
 
-.default-color0.chart-series-line { -fx-stroke: #e9967a; }
+.default-color0.chart-series-line {
+    -fx-stroke: #fc847c;
+     -fx-background-color:  #4297a0;
+     -fx-background-radius: 5px;
+}
+
+.default-color0.chart-line-symbol {
+    -fx-background-color: transparent;
+}
+
 
 .axis .text {
   -fx-padding: 5px;
@@ -336,7 +332,7 @@
 }
 
 .chart-series-line {
-    -fx-stroke: #347aeb;
+    -fx-stroke: #e9817a;
     -fx-stroke-width: 2px;
 }
 

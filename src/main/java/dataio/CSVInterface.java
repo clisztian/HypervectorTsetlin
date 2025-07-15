@@ -1,6 +1,7 @@
 package dataio;
 
 import com.csvreader.CsvReader;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import records.AnyRecord;
@@ -82,7 +83,41 @@ public class CSVInterface {
 		anyRecord = createRecord();
 	}
 
+	public CSVInterface(String file_name, int label_column, int[] ignore) throws IOException {
 
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource(file_name).getFile());
+
+		label_name = null;
+		marketDataFeed = new CsvReader(file.getAbsolutePath());
+		marketDataFeed.readHeaders();
+		headers = marketDataFeed.getHeaders();
+
+		String[] new_headers = new String[headers.length - 1 - ignore.length];
+		if(label_column < 0) {
+			new_headers = new String[headers.length ];
+		}
+
+		//get subset of headers without the label_column index
+
+		int j = 0;
+		for(int i = 0; i < headers.length; i++) {
+			if(i != label_column && !ArrayUtils.contains(ignore, i)) {
+				new_headers[j] = headers[i];
+				j++;
+			}
+		}
+
+		if(label_column >= 0) {
+			label_name = headers[label_column];
+		}
+
+		headers = new_headers;
+
+		//System.out.println("label_name " + label_name);
+
+		anyRecord = createRecord();
+	}
 	
 	/**
 	 * Instantiates a CSV reader for the file name

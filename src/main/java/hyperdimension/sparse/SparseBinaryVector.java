@@ -1,5 +1,6 @@
 package hyperdimension.sparse;
 
+import hyperdimension.encoders.VanillaBHV;
 import util.HVC;
 
 import java.util.ArrayList;
@@ -313,6 +314,10 @@ public class SparseBinaryVector {
         bundled.printVector();
 
 
+    }
+
+    public boolean related(SparseBinaryVector other) {
+        return this.hammingDistance(other) <= DIMENSION * HVC.SPARSE_RELATED_THRESHOLD;
     }
 
     public int getDIMENSION() {

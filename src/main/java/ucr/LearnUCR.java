@@ -4,14 +4,12 @@ import hyperdimension.sequences.SequenceEncoder;
 import tsetlin.AutomataLearning;
 import tsetlin.ConvolutionEncoder;
 import util.HVC;
-import util.TradeMarker;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.*;
 
 import static ucr.TimeSeriesProcessor.readTimeSeriesFile;
@@ -54,6 +52,7 @@ public class LearnUCR {
 
 
     public TrainingData encodeData(SequenceEncoder sequenceEncoder) {
+
 
         numberClasses = sequenceEncoder.getNumberClasses();
 
@@ -171,7 +170,6 @@ public class LearnUCR {
                 }
                 classPredicted[y_test[i]]++;
             }
-            //System.out.println("Epoch: " + e + " Accuracy: " + (float)correct/X_test.length);
             maxAccuracy = Math.max(maxAccuracy, (float)correct/X_test.length);
         }
 
@@ -183,29 +181,56 @@ public class LearnUCR {
 
     public static void main(String[] args) {
 
+        List<String> namelistArray = new ArrayList<String>();
+
+        String dataSummary = "/Users/lisztian/HypervectorTsetlin/src/main/resources/data/DataSummary.csv"; // Replace with your file path
+
+        //print the names of the data setes from DataSummary. It is the third column
+        try (BufferedReader reader = new BufferedReader(new FileReader(dataSummary))) {
+            String line;
+            boolean isHeader = true;
+
+            while ((line = reader.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip the header line
+                    continue;
+                }
+
+                String[] parts = line.split(",");
+
+                namelistArray. add(parts[2].trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //shuffle the namelistArray
+        Collections.shuffle(namelistArray);
+
 
 
 
         LearnUCR learnUCR = new LearnUCR();
 
-        List<String> names = learnUCR.buildNameBase("/home/lisztian/UCR/UCRArchive_2018");
+        List<String> names = learnUCR.buildNameBase("UCRArchive_2018");
 
         //for each name, get the data
-        for(String name : names) {
+        for(String name : namelistArray) {
 
             //System.out.println(name);
             //if name in namelist
-            if (Arrays.asList(namelist).contains(name)) {
+            //if (Arrays.asList(namelist).contains(name)) {
 
                 System.out.println("Processing: " + name);
                 List<TimeSeriesProcessor.TimeSeriesData> data = learnUCR.getData(name);
-                SequenceEncoder sequenceEncoder = new SequenceEncoder(data, 20, 5);
+                SequenceEncoder sequenceEncoder = new SequenceEncoder(data, 20, 3);
 
-                TrainingData trainingData = learnUCR.encodeData(sequenceEncoder);
+                final TrainingData trainingData = learnUCR.encodeData(sequenceEncoder);
 
+                learnUCR.serialLearning(30, trainingData);
                 //run the learning
-                learnUCR.threadLearning(5, 5, trainingData);
-            }
+                //learnUCR.threadLearning(3, 10, trainingData);
+            //}
 
         }
 
@@ -213,8 +238,8 @@ public class LearnUCR {
 
     List<TimeSeriesProcessor.TimeSeriesData> getData(String dataName) {
 
-        List<TimeSeriesProcessor.TimeSeriesData> data = uploadData("/home/lisztian/UCR/UCRArchive_2018/" + dataName + "/" + dataName + "_TRAIN.tsv");
-        List<TimeSeriesProcessor.TimeSeriesData> test = uploadData("/home/lisztian/UCR/UCRArchive_2018/" + dataName + "/" + dataName + "_TEST.tsv");
+        List<TimeSeriesProcessor.TimeSeriesData> data = uploadData("UCRArchive_2018/" + dataName + "/" + dataName + "_TRAIN.tsv");
+        List<TimeSeriesProcessor.TimeSeriesData> test = uploadData("UCRArchive_2018/" + dataName + "/" + dataName + "_TEST.tsv");
 
         data.addAll(test);
         return data;
@@ -261,7 +286,7 @@ public class LearnUCR {
             Random random = new Random(System.currentTimeMillis());
 
             for (int i = 0; i < numberSimulations; i++) {
-                int clauses = 100+random.nextInt(2000);
+                int clauses = 100+random.nextInt(1000);
                 int nLiterals = random.nextInt(100);
                 int threshold = random.nextInt(200);
                 float specificity = (random.nextFloat() * 20);
@@ -306,6 +331,31 @@ public class LearnUCR {
     }
 
 
+    public void serialLearning(int numberSimulations, TrainingData trainingData) {
+
+
+        ParameterAccuracy maxAccuracy = null;
+
+        Random random = new Random(System.currentTimeMillis());
+
+        for (int i = 0; i < numberSimulations; i++) {
+            int clauses = 100+random.nextInt(1000);
+            int nLiterals = random.nextInt(100);
+            int threshold = random.nextInt(200);
+            float specificity = 5f + (random.nextFloat() * 15);
+            boolean negativeFocused = true;
+
+            //System.out.println("Start, End: " + start + " " + end);
+            ParameterAccuracy parameterAccuracy = learning(clauses, nLiterals, threshold, specificity, negativeFocused, trainingData);
+
+
+            System.out.print(i +",");
+            maxAccuracy = max(maxAccuracy, parameterAccuracy);
+        }
+        System.out.println("\nMax Accuracy: " + maxAccuracy);
+
+
+    }
 
 
 

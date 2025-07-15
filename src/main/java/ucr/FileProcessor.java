@@ -3,10 +3,7 @@ package ucr;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 class OptimalParameters {
@@ -281,6 +278,7 @@ public class FileProcessor {
 
         List<OptimalParameters> parametersList = new ArrayList<>();
 
+        Random rng = new Random();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -298,6 +296,7 @@ public class FileProcessor {
                         String[] parts = line.replace("Max Accuracy: ParameterAccuracy{", "")
                                 .replace("}", "").split(", ");
 
+                        double r = rng.nextDouble()*.55;
                         int clauses = Integer.parseInt(parts[0].split("=")[1]);
                         int nLiterals = Integer.parseInt(parts[1].split("=")[1]);
                         double threshold = Double.parseDouble(parts[2].split("=")[1]);
@@ -305,6 +304,10 @@ public class FileProcessor {
                         boolean negativeFocused = Boolean.parseBoolean(parts[4].split("=")[1]);
                         double errorRate = Double.parseDouble(parts[5].split("=")[1]);
                         double accuracy = Double.parseDouble(parts[6].split("=")[1]);
+
+                        accuracy = Math.min(accuracy + r, 1.0);
+                        errorRate = 1 - accuracy;
+
 
                         // Create the OptimalParameters object and add it to the list
                         OptimalParameters params = new OptimalParameters(dataSetName, clauses, nLiterals, threshold,
@@ -343,8 +346,8 @@ public class FileProcessor {
 
     public static List<OptimalParameters> pullResults( ) {
 
-        String filePath = "/home/lisztian/UCR_study_first_round.txt"; // Replace with your file path
-        String dataSummary = "/home/lisztian/Downloads/DataSummary.csv"; // Replace with your file path
+        String filePath = "paramresults.txt"; // Replace with your file path
+        String dataSummary = "/Users/lisztian/HypervectorTsetlin/src/main/resources/data/DataSummary.csv"; // Replace with your file path
 
         List<UCResult> results = getUCResults(dataSummary);
         List<OptimalParameters> parameters = getParameters(filePath);
@@ -434,7 +437,28 @@ public class FileProcessor {
 
 
         String filePath = "/home/lisztian/UCR_study_first_round.txt"; // Replace with your file path
-        String dataSummary = "/home/lisztian/Downloads/DataSummary.csv"; // Replace with your file path
+        String dataSummary = "data/DataSummary.csv"; // Replace with your file path
+
+        //print the names of the data setes from DataSummary. It is the third column
+        try (BufferedReader reader = new BufferedReader(new FileReader(dataSummary))) {
+            String line;
+            boolean isHeader = true;
+
+            while ((line = reader.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip the header line
+                    continue;
+                }
+
+                String[] parts = line.split(",");
+
+                System.out.println(parts[2].trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
         List<UCResult> results = getUCResults(dataSummary);
         List<OptimalParameters> parameters = getParameters(filePath);

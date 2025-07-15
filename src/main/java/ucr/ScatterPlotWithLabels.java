@@ -623,7 +623,7 @@ public class ScatterPlotWithLabels extends Application {
             trainCount[i] = data.get(i).getNumberTrain();
         }
 
-        int[] trainBins = splitData(trainCount, 8);
+        int[] trainBins = splitData(trainCount, 10);
         String[] trainCategories = new String[8];
 
         for(int i = 0; i < 8; i++) {

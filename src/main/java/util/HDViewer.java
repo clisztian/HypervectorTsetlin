@@ -12,7 +12,7 @@ public class HDViewer {
 
 
     final int NROWS = 100;
-    final int NCOLS = 10;
+    final int NCOLS = 15;
 
 
     final GridPane gridPane;

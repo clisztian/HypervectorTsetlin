@@ -6,6 +6,7 @@ import util.QuickSort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 
 /**
@@ -67,7 +68,7 @@ public class AutomataAtom {
 	private int[] drop_clause;
 	
 	
-	PcgRR rng; 
+	final Random rng = new Random(21); // Seeded with arbitrary values to ensure reproducibility of results
 
 
 	private float clause_drop_p = 0;
@@ -111,7 +112,7 @@ public class AutomataAtom {
 		
 		PREDICT = 1;
 		UPDATE = 0;
-		rng = new PcgRR();
+		//rng = new PcgRR();
 
 		feedback_to_la = new int[la_chunks];
 		clause_output = new int[clause_chunks];
@@ -431,7 +432,7 @@ public class AutomataAtom {
 		//System.out.println("Class sum: " + class_sum);
 		class_sum = (class_sum > T) ? T : class_sum;
 		//System.out.println("Class sum: " + class_sum);
-		return class_sum;
+		return Math.max(class_sum,0);
 	}
 	
 	

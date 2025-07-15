@@ -17,6 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import util.HDViewer;
 
@@ -119,6 +121,7 @@ public class HDTimeSeriesPrediction extends Application {
 
         //set the css style
         lineChart.getStylesheets().add(getClass().getClassLoader().getResource("css/Chart.css").toExternalForm());
+        lineChart.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         ComboBox<String> fxComboBox = new ComboBox<>();
         fxComboBox.getItems().addAll("EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "NZDUSD", "EURJPY", "AUDJPY");
@@ -217,13 +220,21 @@ public class HDTimeSeriesPrediction extends Application {
         hbox.setSpacing(10);
         hbox.getChildren().addAll(hdViewerInput.getGridPane(), vbox, hdViewer.getGridPane());
 
+        //create a RadialGradient
+        RadialGradient radialGradient = new RadialGradient(0, 0, 0.5, 0.5, 0.8, true, null,
+                new Stop(0, Color.rgb(10,20,30).brighter()),
+                new Stop(1, Color.rgb(15,15,15)));
+         hbox.getStylesheets().add(getClass().getClassLoader().getResource("css/Chart.css").toExternalForm());
+        hbox.setBackground(new Background(new BackgroundFill(radialGradient, CornerRadii.EMPTY, Insets.EMPTY)));
+
+
         HBox.setHgrow(vbox, Priority.ALWAYS);
 
 
 
         //create scene
         Scene scene = new Scene(hbox, 800, 600);
-        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/Chart.css").toExternalForm());
+        //scene.getStylesheets().add(getClass().getClassLoader().getResource("css/Chart.css").toExternalForm());
 
         //add a keyboard listener to the scene, when pressing the right arrow key, forecast one step
         scene.setOnKeyPressed(event -> {
