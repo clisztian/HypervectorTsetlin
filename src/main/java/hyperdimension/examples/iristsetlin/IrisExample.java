@@ -10,10 +10,7 @@ import tsetlin.AutomataLearning;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class IrisExample {
 
@@ -66,9 +63,10 @@ public class IrisExample {
         //model.printNumberOfLiteralsForEachClause();
 
         int train_set_size = (int) (records.size() * .7);
-
+        long seed = 12345L;
+        Random random = new Random(seed);
         //shuffle the records
-        Collections.shuffle(records);
+        Collections.shuffle(records, random);
 
         //create two sets of random records
         ArrayList<AnyRecord> train_set = new ArrayList<AnyRecord>();
@@ -98,7 +96,7 @@ public class IrisExample {
             Y[i] = (int)label.getLabel(r.getLabel_name());
         }
 
-        for(int e = 0; e < 100; e++) {
+        for(int e = 0; e < 7; e++) {
 
             model.fit(Xi, Y);
 
@@ -162,7 +160,7 @@ public class IrisExample {
     public ArrayList<String> getAllLinesFromFileIntoArray() {
 
         ClassLoader classLoader = IrisExample.class.getClassLoader();
-        File file = new File(classLoader.getResource("protein/iris.tsv").getFile());
+        File file = new File(classLoader.getResource("protein/iris.csv.tsv").getFile());
 
         ArrayList<String> lines = new ArrayList<String>();
 

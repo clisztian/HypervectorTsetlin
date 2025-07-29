@@ -9,7 +9,7 @@ import interpretability.GlobalCategoricalFeatures;
 import interpretability.GlobalRealFeatures;
 import interpretability.GlobalTemporalFeatures;
 import interpretability.Prediction;
-
+import javafx.util.Pair;
 import org.apache.commons.lang3.ArrayUtils;
 import output.RealLabel;
 import records.AnyRecord;
@@ -38,8 +38,7 @@ import java.util.Random;
 
 public class AutomataLearning<V> {
 
-	private final int seed = 10;
-	private final Random rng = new Random(seed);
+	private Random rng;
 	private Evolutionize<V> evolution;
 	private AutomataAtomLearning automaton;
 
@@ -114,7 +113,7 @@ public class AutomataLearning<V> {
 
 		System.out.println("n_real_features: " + n_real_features + " " + n_global_features);
 
-
+		rng = new Random();
 	}
 
 	public AutomataLearning(ConvolutionEncoder encoder, int nClauses, int threshold,  float max_specificity, int nClasses, float drop_clause_p) {
@@ -135,7 +134,7 @@ public class AutomataLearning<V> {
 		n_categorical_features= 0;
 		n_time_features = 0;
 
-
+		rng = new Random();
 	}
 
 
@@ -166,6 +165,7 @@ public class AutomataLearning<V> {
 		}
 
 
+		rng = new Random();
 	}
 
 
@@ -193,9 +193,12 @@ public class AutomataLearning<V> {
 
 		evolution = new Evolutionize(patch_dim_y, dim_y);
 
-        evolution.initiate((AnyRecord) val);
+		if(val instanceof AnyRecord) {
+			evolution.initiate((AnyRecord)val);
+		}
+		else throw new IllegalArgumentException("AutomataLearning: val must be of type AnyRecord");
 
-        evolution.initiateConvolutionEncoder();
+		evolution.initiateConvolutionEncoder();
 		automaton = new AutomataAtomLearning(evolution.getConv_encoder(), threshold, nClasses, nClauses, max_specificity, true, drop_clause_p);
 
 		n_global_features = evolution.getEncoder().getEncode_maps().length;
@@ -213,7 +216,7 @@ public class AutomataLearning<V> {
 
 		System.out.println("n_real_features: " + n_real_features + " " + n_global_features + " " + evolution.getEncoder().getBitDimension());
 
-
+		rng = new Random();
 	}
 
 
@@ -272,7 +275,7 @@ public class AutomataLearning<V> {
 			else if(evolution.getEncoder().getEncode_maps()[i] instanceof TimeEncoder) n_time_features++;
 			else if(evolution.getEncoder().getEncode_maps()[i] instanceof CategoricalEncoder) n_categorical_features++;	
 		}
-
+		rng = new Random();
 	}
 
 	public void setMaxNumberOfLiterals(int max_literals) {
@@ -457,6 +460,25 @@ public class AutomataLearning<V> {
 
 
 
+	//get the literal that matches the RealEncoder
+	public Pair<Integer, Integer> getFeature(int literal) {
+
+		int i = 0;
+		for(Encoder encoder : evolution.getEncoder().getEncode_maps()) {
+
+			int feature_index = 0;
+			if(encoder instanceof RealEncoder) {
+				RealEncoder real = (RealEncoder)encoder;
+
+				feature_index += real.getNumber_of_features();
+				if(literal < feature_index) {
+					return new Pair<Integer, Integer>(i, literal - (feature_index - real.getNumber_of_features()));
+				}
+				i++;
+			}
+		}
+		return new Pair<Integer, Integer>(-1, -1);
+	}
 
 	public void printEncoderNames() {
 

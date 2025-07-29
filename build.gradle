@@ -5,7 +5,7 @@ plugins {
 
 javafx {
     modules = ['javafx.controls', 'javafx.graphics', 'javafx.base', 'javafx.fxml']
-    version = "15.0.1"
+    version = "17.0.1"
 }
 
 group = 'ai.hdvtm'
@@ -18,6 +18,7 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
 
+    implementation group: 'com.jfoenix', name: 'jfoenix', version: '9.0.10'
     // https://mvnrepository.com/artifact/dev.brachtendorf/pcg-java-10
     implementation group: 'dev.brachtendorf', name: 'pcg-java-10', version: '1.0.1'
     implementation group: 'joda-time', name: 'joda-time', version: '2.10.8'
@@ -35,11 +36,13 @@ dependencies {
 
 // https://mvnrepository.com/artifact/org.openjfx/javafx-controls
     // https://mvnrepository.com/artifact/com.jfoenix/jfoenix
-    implementation group: 'com.jfoenix', name: 'jfoenix', version: '9.0.10'
+
 // https://mvnrepository.com/artifact/io.github.evgen2sat/JFXTableView
     implementation group: 'io.github.evgen2sat', name: 'JFXTableView', version: '1.0.3.3'
 // https://mvnrepository.com/artifact/de.gsi.chart/chartfx-chart
-    implementation group: 'de.gsi.chart', name: 'chartfx-chart', version: '11.2.7'
+    // https://mvnrepository.com/artifact/io.fair-acc/chartfx
+    implementation group: 'io.fair-acc', name: 'chartfx', version: '11.3.1'
+
     implementation group: 'ca.umontreal.iro.simul', name: 'ssj', version: '3.3.2'
 
 // https://mvnrepository.com/artifact/com.github.signaflo/timeseries

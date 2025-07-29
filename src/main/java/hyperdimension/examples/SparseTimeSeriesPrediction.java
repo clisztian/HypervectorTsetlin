@@ -3,6 +3,7 @@ package hyperdimension.examples;
 import com.github.signaflo.timeseries.TimeSeries;
 import com.jfoenix.controls.JFXSlider;
 import hyperdimension.sparse.SparseBinaryVector;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Random;
 
 import static fx.MidPriceExtractor.extractMidPriceAtTime;
+import static javafx.application.Application.launch;
 import static util.Util.*;
 
 public class SparseTimeSeriesPrediction extends Application {

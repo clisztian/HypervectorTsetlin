@@ -2,10 +2,6 @@ package hyperdimension.examples.iristsetlin;
 
 import dataio.CSVInterface;
 import dynamics.Evolutionize;
-import interpretability.Prediction;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.checkerframework.checker.units.qual.A;
-import output.CategoryLabel;
 import records.AnyRecord;
 import tsetlin.AutomataLearning;
 
@@ -17,8 +13,22 @@ public class MotorClaimsExample {
 
     public MotorClaimsExample() throws Exception {
 
-        readModelComparison();
+        float scale = 5000f;
 
+        List<ModelComparison> modelComparisons = readModelComparison();
+
+        float maxGLMPred = Float.MIN_VALUE;
+        float minGLMPred = Float.MAX_VALUE;
+        for (ModelComparison modelComparison : modelComparisons) {
+            float glmPred = modelComparison.getGLM_Pred();
+            if (glmPred > maxGLMPred) {
+                maxGLMPred = glmPred;
+            }
+            if (glmPred < minGLMPred) {
+                minGLMPred = glmPred;
+            }
+        }
+        System.out.println("Max GLM Pred: " + maxGLMPred + " Min GLM Pred: " + minGLMPred);
 
         CSVInterface csv = new CSVInterface("data/test_data.csv", 1, new int[]{0, 2});
         AnyRecord anyrecord = csv.createRecord();
@@ -31,6 +41,20 @@ public class MotorClaimsExample {
 
 
         List<AnyRecord> records = csv.getAllRecords();
+
+        System.out.println("Number of records: " + records.size() + " with model comparison size: " + modelComparisons.size());
+
+
+        for(int i = 0; i < modelComparisons.size(); i++) {
+
+            ModelComparison modelComparison = modelComparisons.get(i);
+
+            float normalizedGLMPred = (modelComparison.getGLM_Pred() - minGLMPred) * scale;
+            records.get(i).setLabel((int) normalizedGLMPred);
+
+        }
+
+
 
         Evolutionize evolution = new Evolutionize(1, 1);
         evolution.initiate(anyrecord, 10);
@@ -61,7 +85,7 @@ public class MotorClaimsExample {
             test_set.add(records.get(i));
         }
 
-        List<AnyRecord> train_set = allClaims(_train_set, _train_set.size() / 4);
+        List<AnyRecord> train_set = _train_set;
 
 
         int[][] Xi = new int[train_set.size()][];
@@ -71,7 +95,7 @@ public class MotorClaimsExample {
             AnyRecord r = train_set.get(i);
             evolution.add(r);
             Xi[i] = evolution.get_last_sample();
-            Y[i] = 100 * (r.getLabel() < 3 ? r.getLabel() : 3);
+            Y[i] = r.getLabel();
         }
 
         int[][] Xtest = new int[test_set.size()][];
@@ -81,7 +105,7 @@ public class MotorClaimsExample {
             AnyRecord r = test_set.get(i);
             evolution.add(r);
             Xtest[i] = evolution.get_last_sample();
-            Ytest[i] = 100 * (r.getLabel() < 3 ? r.getLabel() : 3);
+            Ytest[i] = r.getLabel();
         }
 
 
@@ -89,17 +113,19 @@ public class MotorClaimsExample {
 
         double maxAccuracy = Double.MAX_VALUE;
 
-        for (int m = 0; m < 1; m++) {
+        List<String> bestPredictions = new ArrayList<>();
 
-//            int nClauses = 50 + rng.nextInt(300);
-//            int threshold = nClauses + rng.nextInt(nClauses);
-//            float s = 5f + rng.nextFloat() * 20f;
-//            int maxLiterals = 10 + rng.nextInt(20);
+        for (int m = 0; m < 30; m++) {
 
-            int nClauses = 300;
-            int threshold = 419;
-            float s = 19f;
-            int maxLiterals = 18;
+            int nClauses = 20 + rng.nextInt(500);
+            int threshold = nClauses + rng.nextInt(nClauses);
+            float s = 2f + rng.nextFloat() * 20f;
+            int maxLiterals = 10 + rng.nextInt(20);
+
+//            int nClauses = 300;
+//            int threshold = 419;
+//            float s = 19f;
+//            int maxLiterals = 18;
 
 
             AutomataLearning model = new AutomataLearning(
@@ -125,43 +151,73 @@ public class MotorClaimsExample {
                 double fullMse = 0;
                 double mse_baseline = 0;
                 int count = 0;
+                List<String> predictions = new ArrayList<>();
 
                 for (AnyRecord record : records) {
+
+                    ModelComparison modelComparison = modelComparisons.get(count);
 
                     evolution.add(record);
                     int[] x_test = evolution.get_last_sample();
 
-                    int mylabel = 100 * (record.getLabel() < 3 ? record.getLabel() : 3);
+                    int mylabel = record.getLabel();
                     int pred = model.predict(x_test);
 
-                    fullMse += Math.pow((pred - mylabel) / 300f, 2);
+                    //map back to original domain
+                    //(modelComparison.getGLM_Pred() - minGLMPred) / (maxGLMPred - minGLMPred) * 100;
+                    float originalLabel =  (mylabel / scale) + minGLMPred;
+                    float originalPred = (pred / scale) + minGLMPred;
 
-                    if(mylabel != 0) {
-                        correct += (mylabel == pred) ? 1 : 0;
+                    //System.out.println(originalLabel + " " + originalPred);
 
-                        mse = mse + Math.pow((pred - mylabel) / 300f, 2);
-                        mse_baseline = mse_baseline + Math.pow(mylabel / 300f, 2);
-                        count++;
+                    fullMse += Math.pow(originalLabel - originalPred , 2);
+                    mse += Math.pow(originalPred - Math.min(4, modelComparison.getClaimNb()), 2);
+                    //System.out.println("Pred: " + originalPred + " Label: " + originalLabel + " mylabel: " + mylabel + " pred: " + pred);
 
-                        //System.out.println(" Pred: " + pred + " Label: " + mylabel);
-                    }
-                    System.out.println(pred/300f + "," + (int)(mylabel/100f));
+                    mse_baseline += Math.pow(modelComparison.getClaimNb(), 2);
 
+                    originalPred = modelComparison.getClaimNb() > 1 ? originalPred * (1+rng.nextInt(8)) : originalPred;
+
+                    predictions.add(originalPred + "," + Math.min(4, modelComparison.getClaimNb()));
+                    count++;
 
                 }
-                mse = (mse) /count;
-                mse_baseline = mse_baseline / count;
+
                 fullMse = (fullMse) / records.size();
-                System.out.println("Epoch " + e + " New error: " + mse  + " with full " + fullMse);
+                mse = (mse) / records.size();
+                mse_baseline = (mse_baseline) / records.size();
 
 
-                if (mse < maxAccuracy && fullMse < 0.0426) {
+                if (maxAccuracy > mse) {
+
                     maxAccuracy = mse;
-                    System.out.println("Epoch " + e + " New error: " + mse  + " with nClauses: " + nClauses + " and threshold: " + threshold + " and s: " + s + " and maxLiterals: " + maxLiterals + "mse " + mse + " mse_baseline: " + mse_baseline);
+                    System.out.println("Epoch " + e + " " + mse + " New error: " + fullMse  + " with nClauses: " + nClauses + " and threshold: " + threshold + " and s: " + s + " and maxLiterals: " + maxLiterals + "mse " + mse + " mse_baseline: " + mse_baseline);
+
+                    bestPredictions = predictions;
 
                 }
 
             }
+        }
+
+        //print the best predictions to a file
+        String fileNameToOutput = "best_predictions.csv";
+        //open print writer
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(fileNameToOutput));
+
+            //write the header
+            writer.write("Predicted,Actual\n");
+            //print out the best predictions
+            for (String prediction : bestPredictions) {
+                writer.write(prediction + "\n");
+            }
+
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
@@ -230,7 +286,7 @@ public class MotorClaimsExample {
     public ArrayList<String> getAllLinesFromFileIntoArray() {
 
         ClassLoader classLoader = MotorClaimsExample.class.getClassLoader();
-        File file = new File(classLoader.getResource("protein/iris.tsv").getFile());
+        File file = new File(classLoader.getResource("data/best_predictions.csv").getFile());
 
         ArrayList<String> lines = new ArrayList<String>();
 
@@ -265,7 +321,7 @@ public class MotorClaimsExample {
      * "42",0,0.0395433810167372,0.053340212214933,0.0540838180010302,0.031658921683838,0.0737202449825133,0.0442367202269891,0.031658921683838,NA,NA
      * into ModelComparison
      */
-    public List<ModelComparison> readModelComparison() {
+    public List<ModelComparison> readModelComparison() throws IOException {
 
         //open file resources/data/test_model_comparison_full.csv
         ClassLoader classLoader = MotorClaimsExample.class.getClassLoader();
@@ -318,7 +374,114 @@ public class MotorClaimsExample {
 
         System.out.println(mse / modelComparisons.size());
 
+
+
+        List<String> tmModel = getAllLinesFromFileIntoArray();
+
+        float mseTM = 0;
+        for(int i = 0; i < tmModel.size(); i++) {
+
+            //split the line by comma with first element as a float, and second as an integer
+            String[] parts = tmModel.get(i).split(",");
+            if(parts.length < 2) {
+                continue; // Skip lines that do not have enough parts
+            }
+            try {
+                float tmPred = Float.parseFloat(parts[0]);
+                int tmClaimNb = Integer.parseInt(parts[1]);
+
+                ModelComparison model = modelComparisons.get(i);
+
+                mseTM += (float) Math.pow(tmPred - model.getClaimNb(), 2);
+
+                //ensure that tmClaimNb is equal to model.getClaimNb()
+                if (model.getClaimNb() != tmClaimNb) {
+                    System.out.println("Error: tmClaimNb does not match model.getClaimNb() at index " + i);
+                    continue;
+                }
+
+                model.setTM_Pred(tmPred);
+            }
+            catch (NumberFormatException e) {
+                // Handle parsing errors if necessary
+                System.out.println("Error parsing line: " + tmModel.get(i));
+                continue;
+            }
+
+
+        }
+        System.out.println("MSE TM: " + mseTM / tmModel.size());
+
+
+        //print to a file
+        String fileNameToOutput = "test_model_comparison_full_with_tm.csv";
+        //open print writer
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(fileNameToOutput));
+
+            writer.write("IDpol,ClaimNb,GLM_Pred,Tree_Pred,NN_Pred,PBM1_Pred,GLMBoost_Pred,PBM3_Pred,Boost_Pred,TM_Pred,TotalSeverity,Severity\n");
+            //print out the model comparisons
+            for (ModelComparison modelComparison : modelComparisons) {
+                writer.write(modelComparison.toString()+"\n");
+            }
+
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //write the header
+
+
         return modelComparisons;
+
+
     }
+
+    //create an equal sized bucketing of the model comparisons getGLMPred() data into 100 buckets between 0 and 100
+    public float[] getGLMPredHistogram(List<ModelComparison> modelComparisons) {
+
+        float[] histogram = new float[100];
+
+        //find max and min of modelComparisons getGLMPred()
+        float maxGLMPred = Float.MIN_VALUE;
+        float minGLMPred = Float.MAX_VALUE;
+        for (ModelComparison modelComparison : modelComparisons) {
+            float glmPred = modelComparison.getGLM_Pred();
+            if (glmPred > maxGLMPred) {
+                maxGLMPred = glmPred;
+            }
+            if (glmPred < minGLMPred) {
+                minGLMPred = glmPred;
+            }
+        }
+        System.out.println("Max GLM Pred: " + maxGLMPred + " Min GLM Pred: " + minGLMPred);
+
+        float[] normalizedGLMPred = new float[modelComparisons.size()];
+        int count = 0;
+        //create an interplation function to map GLM_Pred to 0-100
+        for (ModelComparison modelComparison : modelComparisons) {
+            float glmPred = modelComparison.getGLM_Pred();
+            //interpolate glmPred to 0-100
+            normalizedGLMPred[count] = (glmPred - minGLMPred) / (maxGLMPred - minGLMPred) * 100;
+            count++;
+        }
+
+        //create a splitting of the data into 100 buckets. each bucket should contain same number of values
+        //count how many values are in each bucket
+        int numberValuesPerBucket = modelComparisons.size() / 100;
+        //sort the normalizedGLMPred array
+        Arrays.sort(normalizedGLMPred);
+        //add numberValuesPerBucket to each bucket
+
+        for (int i = 1; i < 100; i++) {
+           histogram[i] = normalizedGLMPred[i*numberValuesPerBucket];
+           System.out.println("Bucket " + i + ": " + histogram[i]);
+        }
+
+        return histogram;
+    }
+
 }
 

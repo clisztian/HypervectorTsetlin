@@ -1,6 +1,7 @@
 package util;
 
-import de.gsi.chart.plugins.DataPointTooltip;
+
+import io.fair_acc.chartfx.plugins.DataPointTooltip;
 import javafx.scene.control.TextField;
 
 public class TextFieldTooltip extends DataPointTooltip {

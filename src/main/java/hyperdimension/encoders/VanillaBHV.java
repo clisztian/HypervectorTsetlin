@@ -243,6 +243,7 @@ public class VanillaBHV  {
         return intArray;
     }
 
+
     public static void main(String[] args) {
         // Test VanillaPermutation
         VanillaPermutation perm1 = VanillaPermutation.random();
